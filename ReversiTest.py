@@ -1,8 +1,9 @@
+#!/usr/bin/python
 import unittest
 import reversi
 
 
-class TestUM(unittest.TestCase):
+class ReversiTest(unittest.TestCase):
 
     def setUp(self):
         self.board = reversi.ReversiBoard().set_default_board()
