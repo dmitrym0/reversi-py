@@ -25,5 +25,10 @@ class ReversiTest(unittest.TestCase):
     def test_out_of_bounds(self):
         self.assertIsNone(self.board.right((7, 0)))
 
+    def test_initial_layout(self):
+        self.assertTrue(self.board.iswhite((4,4)))
+        self.assertTrue(self.board.isblack((4,3)))
+        self.assertTrue(self.board.isempty((1,1)))
+
 if __name__ == '__main__':
     unittest.main()
