@@ -52,6 +52,16 @@ class ReversiTest(unittest.TestCase):
         result = self.board.islegal((3,2), reversi.BLACK)
         self.assertEqual(result, [[(3, 3), (3, 4), (3, 2)]])
 
+    def test_an_illegal_move_for_whites_initially(self):
+        result = self.board.islegal((2,3), reversi.WHITE)
+        self.assertEqual(result, [])
+
+
+    def test_the_number_of_available_legal_moves(self):
+        black_available_moves = self.board.getlegalmovesforcolor(reversi.BLACK)
+        white_available_moves = self.board.getlegalmovesforcolor(reversi.WHITE)
+        self.assertEqual(len(black_available_moves), 4)
+        self.assertEqual(len(white_available_moves), 4)
 
 
 

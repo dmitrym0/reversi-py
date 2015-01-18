@@ -92,6 +92,15 @@ class ReversiBoard:
             for tuple in run:
                 self.settupletocolor(tuple, color)
 
+    def getlegalmovesforcolor(self, color):
+        legal_moves = []
+        for x in range(8):
+            for y in range(8):
+                tuple = (x,y)
+                possible_legal_moves = self.islegal(tuple, color)
+                if len(possible_legal_moves) > 0:
+                    legal_moves.append(tuple)
+        return legal_moves
 
     def _generateFlipsFor(self, tuple, color):
         flipped_positions = []
