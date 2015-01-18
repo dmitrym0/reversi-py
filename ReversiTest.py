@@ -19,8 +19,20 @@ class ReversiTest(unittest.TestCase):
     def test_up_right(self):
         self.assertEqual(self.board.up_right((2, 2)), (3, 1))
 
+    def test_left(self):
+        self.assertEqual(self.board.left((2, 2)), (1, 2))
+
+    def test_up_left(self):
+        self.assertEqual(self.board.up_left((2, 2)), (1, 1))
+
     def test_right(self):
         self.assertEqual(self.board.right((2, 2)), (3, 2))
+
+    def test_down(self):
+        self.assertEqual(self.board.down((2,2)), (2,3))
+
+    def test_down_right(self):
+        self.assertEqual(self.board.down_right((2, 2)), (3, 3))
 
     def test_out_of_bounds(self):
         self.assertIsNone(self.board.right((7, 0)))
@@ -29,6 +41,19 @@ class ReversiTest(unittest.TestCase):
         self.assertTrue(self.board.iswhite((4,4)))
         self.assertTrue(self.board.isblack((4,3)))
         self.assertTrue(self.board.isempty((1,1)))
+
+    def test_is_legal_for_a_spot_already_taken(self):
+        self.assertFalse(self.board.islegal((4,4,), reversi.WHITE))
+
+    def test_is_legal_for_random_empty_spot_thats_not_legal(self):
+        self.assertFalse(self.board.islegal((0,0), reversi.WHITE))
+
+    def test_is_legal_for_the_initial_position_that_should_be_legal(self):
+        result = self.board.islegal((3,2), reversi.BLACK)
+        self.assertEqual(result, [[(3, 3), (3, 4), (3, 2)]])
+
+
+
 
 if __name__ == '__main__':
     unittest.main()

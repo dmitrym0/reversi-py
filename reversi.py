@@ -22,18 +22,29 @@ class ReversiBoard:
         return self.board
 
     def islegal(self, tuple, color):
-        return False
+        if not self.isempty(tuple):
+            return []
+        return self._generateFlipsFor(tuple,color)
+
 
     def up(self, tuple):
+        if tuple is None:
+            return None
         return self.new_tuple_or_null((tuple[0], tuple[1] - 1))
 
     def down(self, tuple):
+        if tuple is None:
+            return None
         return self.new_tuple_or_null((tuple[0], tuple[1] + 1))
 
     def left(self, tuple):
+        if tuple is None:
+            return None
         return self.new_tuple_or_null((tuple[0]-1, tuple[1]))
 
     def right(self, tuple):
+        if tuple is None:
+            return None
         return self.new_tuple_or_null((tuple[0]+1, tuple[1]))
 
     def up_right(self, tuple):
@@ -67,4 +78,39 @@ class ReversiBoard:
 
     def isposition(self, tuple, color):
         return self.board[tuple[0]][tuple[1]] == color
+
+    def settupletocolor(self, tuple, color):
+        self.board[tuple[0]][tuple[1]] = color
+
+    def opposite_color(self, color):
+        if color == WHITE:
+            return BLACK
+        return WHITE
+
+    def flip(self, flips, color):
+        for run in flips:
+            for tuple in run:
+                self.settupletocolor(tuple, color)
+
+
+    def _generateFlipsFor(self, tuple, color):
+        flipped_positions = []
+        current_run = []
+        opposite_color = self.opposite_color(color)
+        directionals = [self.up, self.up_left, self.up_right, self.down, self.down_right, self.down_left, self.left, self.right]
+        for direction in directionals:
+            new_position = direction(tuple)
+            while (new_position is not None):
+                # we got more than one flipped coordinate and now hit our color stone, so this is a valid run
+                if (len(current_run) > 0 and self.isposition(new_position, color)):
+                    current_run.append(new_position) # append the end of the run
+                    current_run.append(tuple)        # append the start of the run
+                    flipped_positions.append(current_run)
+                    current_run = []
+                elif (self.isposition(new_position, opposite_color)):
+                    current_run.append(new_position)
+                else:
+                    break
+                new_position  = direction(new_position)
+        return flipped_positions
 
