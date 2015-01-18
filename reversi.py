@@ -99,6 +99,7 @@ class ReversiBoard:
         opposite_color = self.opposite_color(color)
         directionals = [self.up, self.up_left, self.up_right, self.down, self.down_right, self.down_left, self.left, self.right]
         for direction in directionals:
+            current_run = []
             new_position = direction(tuple)
             while (new_position is not None):
                 # we got more than one flipped coordinate and now hit our color stone, so this is a valid run
@@ -106,7 +107,7 @@ class ReversiBoard:
                     current_run.append(new_position) # append the end of the run
                     current_run.append(tuple)        # append the start of the run
                     flipped_positions.append(current_run)
-                    current_run = []
+                    break
                 elif (self.isposition(new_position, opposite_color)):
                     current_run.append(new_position)
                 else:
