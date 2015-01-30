@@ -2,6 +2,7 @@
 from Tkinter import *
 import numpy
 import reversi
+import reversievaluator
 
 
 class App:
@@ -9,6 +10,7 @@ class App:
         self.board = numpy.zeros((8, 8), dtype=object)
         self.master = master
         self.reversi_board = reversi.ReversiBoard().set_default_board()
+        self.evaluator = reversievaluator.ReversiEvaluator()
         self._init_board()
         self.current_move = reversi.WHITE
         self.current_legal_moves = self.reversi_board.getlegalmovesforcolor(self.current_move)
@@ -61,7 +63,7 @@ class App:
         if (x,y) in self.current_legal_moves:
             self.update_board_with_move((x,y))
         else:
-            print "not ok"
+            print "this move is not legal"
 
     def update_board_with_move(self, tuple):
         flips = self.reversi_board.islegal(tuple, self.current_move)
@@ -70,6 +72,10 @@ class App:
         self.current_legal_moves = self.reversi_board.getlegalmovesforcolor(self.current_move)
         self.redraw(self.reversi_board)
         self.higlight_legal_moves(self.current_legal_moves)
+        stats = self.reversi_board.boardstats()
+        print "Pieces= White: ", stats[reversi.WHITE], " black: ", stats[reversi.BLACK]
+        score = self.evaluator.evaluate_board(self.reversi_board)
+        print "Score = White: ", score[reversi.WHITE], " black: ", score[reversi.BLACK]
 
 
 root = Tk()

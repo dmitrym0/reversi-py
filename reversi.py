@@ -102,6 +102,18 @@ class ReversiBoard:
                     legal_moves.append(tuple)
         return legal_moves
 
+    def boardstats(self):
+        white = 0
+        black = 0
+        for x in range(8):
+            for y in range(8):
+                tuple = (x, y)
+                if self.iswhite(tuple):
+                    white += 1
+                if self.isblack(tuple):
+                    black += 1
+        return {WHITE: white, BLACK: black}
+    
     def _generateFlipsFor(self, tuple, color):
         flipped_positions = []
         current_run = []
