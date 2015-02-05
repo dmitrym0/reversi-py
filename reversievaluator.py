@@ -24,3 +24,13 @@ class ReversiEvaluator:
                     blackscore += self.scores[x][y]
         return {reversi.WHITE: whitescore, reversi.BLACK: blackscore}
 
+
+class ReversiThinker:
+    def __init__(self, evaluator, board, mycolor):
+        self.evaluator = evaluator
+        self.board = board
+        self.mycolor = mycolor
+
+    def make_move(self):
+        moves = self.board.getlegalmovesforcolor(self.mycolor)
+        return moves[0]

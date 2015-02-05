@@ -12,6 +12,7 @@ class App:
         self.reversi_board = reversi.ReversiBoard().set_default_board()
         self.evaluator = reversievaluator.ReversiEvaluator()
         self._init_board()
+        self.thinker = reversievaluator.ReversiThinker(self.evaluator, self.reversi_board, reversi.BLACK)
         self.current_move = reversi.WHITE
         self.current_legal_moves = self.reversi_board.getlegalmovesforcolor(self.current_move)
         self.redraw(self.reversi_board)
@@ -68,7 +69,9 @@ class App:
     def update_board_with_move(self, tuple):
         flips = self.reversi_board.islegal(tuple, self.current_move)
         self.reversi_board.flip(flips, self.current_move)
-        self.current_move = self.reversi_board.opposite_color(self.current_move)
+        computer_color = self.reversi_board.opposite_color(self.current_move)
+        computer_flips = self.reversi_board.islegal(self.thinker.make_move(), computer_color)
+        self.reversi_board.flip(computer_flips, computer_color)
         self.current_legal_moves = self.reversi_board.getlegalmovesforcolor(self.current_move)
         self.redraw(self.reversi_board)
         self.higlight_legal_moves(self.current_legal_moves)
