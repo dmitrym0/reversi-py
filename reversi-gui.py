@@ -50,12 +50,24 @@ class App:
             image = PhotoImage(file="circle.gif")
             self._replace_button_image_with_image(legalmove, image)
 
+    def higlight_white_moves(self, runs):
+        for run in runs:
+            for move in run:
+                print "highlight white ", move
+                image = PhotoImage(file="white-flipped.gif")
+                self._replace_button_image_with_image(move, image)
+
+    def higlight_black_moves(self, runs):
+        for run in runs:
+            for move in run:
+                print "highlight black ", move
+                image = PhotoImage(file="black-flipped.gif")
+                self._replace_button_image_with_image(move, image)
 
     def _replace_button_image_with_image(self, tuple, image):
         button = self.board[tuple[0]][tuple[1]]
         button.configure(image=image,command=lambda: self.handle_click(tuple[0],tuple[1]))
         button.image = image
-
         button.pack(side=LEFT)
 
 
@@ -76,6 +88,8 @@ class App:
         self.current_legal_moves = self.reversi_board.getlegalmovesforcolor(self.current_move)
         self.redraw(self.reversi_board)
         self.higlight_legal_moves(self.current_legal_moves)
+        self.higlight_white_moves(flips)
+        self.higlight_black_moves(computer_flips)
         stats = self.reversi_board.boardstats()
         print "Pieces= White: ", stats[reversi.WHITE], " black: ", stats[reversi.BLACK]
         score = self.evaluator.evaluate_board(self.reversi_board)

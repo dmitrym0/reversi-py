@@ -35,9 +35,10 @@ class ReversiEvaluator:
             new_board.flip(computer_flips, player)
             result = self.minimax(new_board, ply-1, opponent, player, original)
             print ply, " ", player, " r=", result, " ", best
-            
+
             if best[SCORE] is None:
                 best[SCORE] = result[SCORE]
+                best[MOVE] = move
 
             if player == original:
                 print '+'
