@@ -2,6 +2,10 @@ import numpy
 import reversi
 import copy
 
+
+SCORE = "score"
+MOVE = "move"
+
 class ReversiEvaluator:
     def __init__(self):
         self.scores =      ([[ 100.,  -20.,  020.,  010.,  010.,  020.,  -20.,  100.],
@@ -12,6 +16,32 @@ class ReversiEvaluator:
                              [ 020.,  000.,  000.,  000.,  000.,  000.,  000.,  020.],
                              [ -20.,  -20.,  000.,  000.,  000.,  000.,  -20.,  -20.],
                              [ 100.,  -20.,  020.,  010.,  010.,  020.,  -20.,  100.]])
+
+    def best(self, board, player, opponent):
+        self.original = player
+        result = self.minimax(board,2, player, opponent)
+        return result
+
+    def minimax(self, board, ply, player, opponent):
+        best = {MOVE: (), SCORE: -100000}
+        moves = board.getlegalmovesforcolor(player)
+
+        if ply == 0 or len(moves) == 0:
+            score =  self.evaluate_board(board)
+            return {MOVE: (), SCORE: score[player]}
+
+        for move in moves:
+            new_board = copy.deepcopy(board)
+            computer_flips = new_board.islegal(move, player)
+            new_board.flip(computer_flips, player)
+            result = self.minimax(new_board, ply-1, opponent, player)
+            if player == self.original:
+                if result[SCORE] >= best[SCORE]:
+                    best = {MOVE: move, SCORE:result[SCORE]}
+            else:
+                if result[SCORE] <= best[SCORE]:
+                    best = {MOVE: move, SCORE:result[SCORE]}
+        return best
 
     def evaluate_board(self, board):
         whitescore = 0
@@ -24,49 +54,3 @@ class ReversiEvaluator:
                 if board.isblack(tuple):
                     blackscore += self.scores[x][y]
         return {reversi.WHITE: whitescore, reversi.BLACK: blackscore}
-
-
-class ReversiThinker:
-    def __init__(self, evaluator, board, mycolor):
-        self.evaluator = evaluator
-        self.board = board
-        self.mycolor = mycolor
-        self.maxdepth = 3
-        self._resetscore()
-
-    def _resetscore(self):
-        self.bestscore = -1000
-        self.besttuple = (0,0)
-        self.evals = 0
-
-    def make_move(self):
-        self._resetscore()
-        moves = self.board.getlegalmovesforcolor(self.mycolor)
-        for tuple in moves:
-            result = self.walkthetree(tuple, copy.deepcopy(self.board), 0)
-            if result is not None:
-                return tuple
-
-        print "Best score=", self.bestscore, " best move=", self.besttuple, " evals=", self.evals
-        return self.besttuple
-
-    def walkthetree(self, tuple, board, depth):
-        print "Depth=", depth
-        computer_flips = board.islegal(tuple, self.mycolor)
-        board.flip(computer_flips, self.mycolor)
-        moves = board.getlegalmovesforcolor(self.mycolor)
-        self.evals += 1
-        # print "Score=", score, " best=", self.bestscore, "tuple=", tuple
-
-        if (depth >= self.maxdepth):
-            score = self.evaluator.evaluate_board(board)[self.mycolor]
-            if (score > self.bestscore):
-                self.besttuple = tuple
-                self.bestscore = score
-            return score
-        for tuple in moves:
-            score = self.walkthetree(tuple, copy.deepcopy(board), depth + 1)
-            if score is not None:
-                return score
-        return
-
