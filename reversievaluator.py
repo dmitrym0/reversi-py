@@ -18,28 +18,34 @@ class ReversiEvaluator:
                              [ 100.,  -20.,  020.,  010.,  010.,  020.,  -20.,  100.]])
 
     def best(self, board, player, opponent):
-        self.original = player
-        result = self.minimax(board,2, player, opponent)
+        result = self.minimax(board,2, player, opponent, player)
         return result
 
-    def minimax(self, board, ply, player, opponent):
-        best = {MOVE: (), SCORE: -100000}
+    def minimax(self, board, ply, player, opponent, original):
+        best = {MOVE: (), SCORE: None}
         moves = board.getlegalmovesforcolor(player)
 
         if ply == 0 or len(moves) == 0:
             score =  self.evaluate_board(board)
-            return {MOVE: (), SCORE: score[player]}
+            return {MOVE: (), SCORE: score[original]}
 
         for move in moves:
             new_board = copy.deepcopy(board)
             computer_flips = new_board.islegal(move, player)
             new_board.flip(computer_flips, player)
-            result = self.minimax(new_board, ply-1, opponent, player)
-            if player == self.original:
-                if result[SCORE] >= best[SCORE]:
+            result = self.minimax(new_board, ply-1, opponent, player, original)
+            print ply, " ", player, " r=", result, " ", best
+            
+            if best[SCORE] is None:
+                best[SCORE] = result[SCORE]
+
+            if player == original:
+                print '+'
+                if result[SCORE] > best[SCORE]:
                     best = {MOVE: move, SCORE:result[SCORE]}
             else:
-                if result[SCORE] <= best[SCORE]:
+                print '-'
+                if result[SCORE] < best[SCORE]:
                     best = {MOVE: move, SCORE:result[SCORE]}
         return best
 
